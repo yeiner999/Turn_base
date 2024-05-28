@@ -1,0 +1,57 @@
+[gd_scene load_steps=2 format=3 uid="uid://gd6dpv7cro7d"]
+
+[ext_resource type="Script" path="res://scripts/ui_positioning.gd" id="1_80v7y"]
+
+[node name="MarginContainer" type="MarginContainer"]
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_top = -50.0
+offset_right = 616.0
+offset_bottom = 50.0
+grow_vertical = 2
+theme_override_constants/margin_left = 50
+
+[node name="BoxContainer" type="Control" parent="."]
+layout_mode = 2
+size_flags_horizontal = 4
+script = ExtResource("1_80v7y")
+
+[node name="Button" type="Button" parent="BoxContainer"]
+custom_minimum_size = Vector2(120, 100)
+layout_mode = 2
+offset_right = 120.0
+offset_bottom = 100.0
+text = "accion 1"
+
+[node name="Button2" type="Button" parent="BoxContainer"]
+custom_minimum_size = Vector2(120, 100)
+layout_mode = 2
+offset_left = 124.0
+offset_right = 244.0
+offset_bottom = 100.0
+text = "accion 2"
+
+[node name="Button3" type="Button" parent="BoxContainer"]
+custom_minimum_size = Vector2(120, 100)
+layout_mode = 2
+offset_left = 248.0
+offset_right = 368.0
+offset_bottom = 100.0
+text = "accion 3"
+
+[node name="Button4" type="Button" parent="BoxContainer"]
+custom_minimum_size = Vector2(120, 100)
+layout_mode = 2
+offset_left = 372.0
+offset_right = 492.0
+offset_bottom = 100.0
+text = "accion 4"
+
+[node name="Button5" type="Button" parent="BoxContainer"]
+custom_minimum_size = Vector2(120, 100)
+layout_mode = 2
+offset_left = 496.0
+offset_right = 616.0
+offset_bottom = 100.0
+text = "accion 5"

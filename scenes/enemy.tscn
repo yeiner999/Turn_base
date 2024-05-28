@@ -1,0 +1,29 @@
+[gd_scene load_steps=5 format=3 uid="uid://ccf1lhbptj3ch"]
+
+[ext_resource type="PackedScene" uid="uid://chuc6vfp2wagp" path="res://scenes/character.tscn" id="1_mxl2w"]
+[ext_resource type="Script" path="res://scripts/enemy.gd" id="2_16irf"]
+[ext_resource type="Texture2D" uid="uid://cvwbvfryuefnh" path="res://graphics/battle/enemy/enemy.png" id="3_svunv"]
+[ext_resource type="PackedScene" uid="uid://dxkviwc3e00ka" path="res://scenes/animation_player_2.tscn" id="4_0aqh6"]
+
+[node name="character" instance=ExtResource("1_mxl2w")]
+script = ExtResource("2_16irf")
+
+[node name="Sprite2D" parent="." index="0"]
+texture = ExtResource("3_svunv")
+
+[node name="focus" parent="." index="1"]
+position = Vector2(1, -301)
+
+[node name="Label" parent="." index="2"]
+offset_left = -40.0
+offset_top = -323.0
+offset_right = 29.0
+offset_bottom = -268.0
+
+[node name="CollisionShape2D" parent="Area2D" index="0"]
+position = Vector2(2, 4)
+scale = Vector2(23.7152, 24.4791)
+
+[node name="AnimationPlayer2" parent="." index="4" instance=ExtResource("4_0aqh6")]
+
+[editable path="AnimationPlayer"]
