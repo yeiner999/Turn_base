@@ -34,7 +34,6 @@ enum CharaState {
 
 var state = BattleState.START
 var selecting_target = false
-var current_attacker: Character
 var current_action: String
 
 func _ready():
@@ -114,7 +113,7 @@ func _player_turn():
 		return
 
 	var attacker = player_characters[current_turn_index]
-	current_attacker = attacker
+	Global.current_attacker = attacker
 	_show_action_buttons(attacker)
 
 func _show_action_buttons(attacker: Character):
@@ -141,7 +140,7 @@ func _on_attack_button_pressed():
 
 # Lógica del botón de defensa
 func _on_defend_button_pressed():
-	current_attacker.is_defending = true
+	Global.current_attacker.is_defending = true
 	_end_turn()
 	
 func _on_hability1_button_pressed():
@@ -174,11 +173,13 @@ func _on_target_selected(target):
 	for character in player_characters + enemy_characters:
 			character.selecting_target = false
 			character._set_highlight(false)
+			
+	Global.current_target = target
 	
 	if current_action == "button1":
-		await current_attacker.attack_target(target, 3)
+		await Global.current_attacker.attack_target()
 	elif current_action == "button2":
-		await current_attacker.hability1(target)
+		await Global.current_attacker.hability1(target)
 			
 	ui_container.visible = true
 	_end_turn()
@@ -186,8 +187,8 @@ func _on_target_selected(target):
 # Finaliza el turno del jugador y pasa al siguiente turno
 func _end_turn():
 	ui_container.visible = false
-	if current_attacker.additional_turns > 0:
-		current_attacker.additional_turns -= 1
+	if Global.current_attacker.additional_turns > 0:
+		Global.current_attacker.additional_turns -= 1
 	else:
 		current_turn_index += 1
 		if current_turn_index >= player_characters.size():
@@ -215,16 +216,20 @@ func _enemy_end_turn():
 func _enemy_turn():
 	if _is_battle_over():
 		return
+		
+	Global.current_attacker = enemy_characters[enemy_current_turn_index]
 	
 	var random_index = randi() % player_characters.size() - 1  # Genera un número aleatorio entre 0 y 2
-
-	await enemy_characters[enemy_current_turn_index].attack_target(player_characters[random_index], 1)
 	
-	if enemy_characters[enemy_current_turn_index].additional_turns > 0:
-		enemy_characters[enemy_current_turn_index].additional_turns -= 1
+	Global.current_target = player_characters[random_index]
+	
+	await Global.current_attacker.attack_target()
+	
+	if Global.current_attacker.additional_turns > 0:
+		Global.current_attacker.additional_turns -= 1
 		_enemy_turn()
 	else:
-		enemy_characters[enemy_current_turn_index].additional_turns = enemy_characters[enemy_current_turn_index].additional_turns_pred 
+		Global.current_attacker.additional_turns = Global.current_attacker.additional_turns_pred 
 		_enemy_end_turn()
 
 # Comprueba si la batalla ha terminado

@@ -66,28 +66,26 @@ func calculate_multiplier(typeOfAttack: TypeOfDamage, target: Character) -> floa
 		
 	return multiplier
 	
-func calculate_attack(target: Character, multiplier: float):
-	var actual_damage = max(0, (attack - target.defense) * multiplier)
-	if target.is_defending == true:
+func calculate_attack_and_hit_target():
+	var actual_damage = max(0, (Global.current_attacker.attack - Global.current_target.defense) * Global.current_multiplier)
+	if Global.current_target.is_defending == true:
 		actual_damage = actual_damage/2
 	# Reproducir la animación de recibir daño del objetivo
-	target.play_animation("hit")
+	Global.current_target.play_animation("hit")
 	
 	# Aplicar el daño al objetivo
-	target.take_damage(int(actual_damage))
+	Global.current_target.take_damage(int(actual_damage))
 	
 	# Esperar a que la animación de recibir daño termine
-	await target.animation_player.animation_finished
+	await Global.current_target.animation_player.animation_finished
 
 # Método para atacar a otro personaje
-func attack_target(target: Character, multiplier: float) -> void:
+func attack_target() -> void:
 	# Reproducir la animación de ataque del atacante
 	play_animation("attack")
 	
 	# Esperar a que la animación de ataque termine
 	await animation_player.animation_finished
-	
-	await calculate_attack(target, multiplier)
 	
 
 func support_target(target: Character, property, value):
@@ -95,7 +93,6 @@ func support_target(target: Character, property, value):
 	
 func hability1(target: Character):
 	support_target(target, "additional_turns", 1)
-	print(target.additional_turns)
 	
 func hability2():
 	print("2")
