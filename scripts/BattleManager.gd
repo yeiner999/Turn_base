@@ -114,6 +114,9 @@ func _player_turn():
 
 	var attacker = player_characters[current_turn_index]
 	Global.current_attacker = attacker
+	
+	await Global.await_current_target_animation()
+		
 	_show_action_buttons(attacker)
 
 func _show_action_buttons(attacker: Character):

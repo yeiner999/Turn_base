@@ -53,18 +53,19 @@ func calculate_attack_and_hit_target():
 	if Global.current_target.is_defending == true:
 		actual_damage = actual_damage/2
 	# Reproducir la animación de recibir daño del objetivo
-	Global.current_target.play_animation("hit")
+	await Global.current_target.play_animation("hit")
 	
 	# Aplicar el daño al objetivo
-	Global.current_target.take_damage(int(actual_damage))
+	await Global.current_target.take_damage(int(actual_damage))
 	
 	# Esperar a que la animación de recibir daño termine
 	await Global.current_target.animation_player.animation_finished
 
 # Método para atacar a otro personaje
 func attack_target() -> void:
+	await Global.await_current_target_animation()
 	# Reproducir la animación de ataque del atacante
-	play_animation("attack")
+	await play_animation("attack")
 	
 	# Esperar a que la animación de ataque termine
 	await animation_player.animation_finished
