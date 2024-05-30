@@ -2,14 +2,6 @@ extends Node2D
 
 class_name Character
 
-# Enum para definir tipos de daño
-enum TypeOfDamage {
-	PHYSICAL,
-	MAGICAL,
-	ILLUSORY,
-	PIERCING
-}
-
 # Propiedades del personaje
 var character_name: String
 var health: int = 100
@@ -19,9 +11,9 @@ var defense: int = 5
 var is_player: bool = true
 var is_selected: bool = false
 var is_defending: bool = false
-var resistance: Array[TypeOfDamage]
-var weakness: Array[TypeOfDamage]
-var strength: Array[TypeOfDamage]
+var resistance: Array[Global.TypeOfDamage] = [Global.TypeOfDamage.PHYSICAL]
+var weakness: Array[Global.TypeOfDamage] = [Global.TypeOfDamage.MAGICAL]
+var strength: Array[Global.TypeOfDamage] = [Global.TypeOfDamage.PHYSICAL]
 var additional_turns: int = 0
 var additional_turns_pred: int = 0
 
@@ -30,13 +22,13 @@ var selecting_target: bool = false
 
 # habilidades
 var attack_name: String = "Ataque Perforante"
-var attack_type: Global.TypeOfHability = Global.TypeOfHability.ATTACK
+var attack_type: Global.TypeOfDamage = Global.TypeOfDamage.PHYSICAL
 var hability1_name: String = "habilidad 1"
 var hability2_name: String = "habilidad 2"
 var hability3_name: String = "habilidad 3"
 var hability1_type: Global.TypeOfHability = Global.TypeOfHability.SUPPORT
-var hability2_type: Global.TypeOfHability = Global.TypeOfHability.ATTACK
-var hability3_type: Global.TypeOfHability = Global.TypeOfHability.ATTACK
+var hability2_type: Global.TypeOfDamage = Global.TypeOfDamage.PHYSICAL
+var hability3_type: Global.TypeOfDamage = Global.TypeOfDamage.PHYSICAL
 
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 	
@@ -55,16 +47,6 @@ func heal(amount: int) -> void:
 	if health > max_health:
 		health = max_health
 
-func calculate_multiplier(typeOfAttack: TypeOfDamage, target: Character) -> float:
-	var multiplier: float = 0
-	if target.weakness.has(typeOfAttack):
-		multiplier += 1.5
-	if target.resistance.has(typeOfAttack):
-		multiplier += 0.5
-	if strength.has(typeOfAttack):
-		multiplier += 1.2
-		
-	return multiplier
 	
 func calculate_attack_and_hit_target():
 	var actual_damage = max(0, (Global.current_attacker.attack - Global.current_target.defense) * Global.current_multiplier)

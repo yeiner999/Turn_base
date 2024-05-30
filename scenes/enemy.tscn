@@ -4,9 +4,9 @@
 [ext_resource type="Script" path="res://scripts/enemy.gd" id="2_16irf"]
 [ext_resource type="Texture2D" uid="uid://cvwbvfryuefnh" path="res://graphics/battle/enemy/enemy.png" id="3_svunv"]
 
-[sub_resource type="Animation" id="Animation_yq81e"]
+[sub_resource type="Animation" id="Animation_8h0j0"]
 resource_name = "attack"
-length = 0.7
+length = 0.6
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -34,7 +34,7 @@ tracks/1/keys = {
 }]
 }
 
-[sub_resource type="Animation" id="Animation_875ax"]
+[sub_resource type="Animation" id="Animation_t7ri7"]
 resource_name = "hit"
 length = 0.7
 tracks/0/type = "value"
@@ -44,16 +44,16 @@ tracks/0/path = NodePath("Sprite2D:position")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.3, 0.7),
+"times": PackedFloat32Array(0, 0.2, 0.7),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 0,
 "values": [Vector2(0, 0), Vector2(300, 0), Vector2(0, 0)]
 }
 
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_yhdhi"]
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_hg7am"]
 _data = {
-"attack": SubResource("Animation_yq81e"),
-"hit": SubResource("Animation_875ax")
+"attack": SubResource("Animation_8h0j0"),
+"hit": SubResource("Animation_t7ri7")
 }
 
 [node name="character" instance=ExtResource("1_mxl2w")]
@@ -75,7 +75,7 @@ offset_bottom = -268.0
 position = Vector2(2, 4)
 scale = Vector2(23.7152, 24.4791)
 
-[node name="AnimationPlayer2" type="AnimationPlayer" parent="." index="4"]
+[node name="AnimationPlayer2" type="AnimationPlayer" parent="." index="5"]
 libraries = {
-"": SubResource("AnimationLibrary_yhdhi")
+"": SubResource("AnimationLibrary_hg7am")
 }

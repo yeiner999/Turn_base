@@ -177,6 +177,7 @@ func _on_target_selected(target):
 	Global.current_target = target
 	
 	if current_action == "button1":
+		Global.calculate_multiplier(Global.current_attacker.attack_type)
 		await Global.current_attacker.attack_target()
 	elif current_action == "button2":
 		await Global.current_attacker.hability1(target)
@@ -222,6 +223,8 @@ func _enemy_turn():
 	var random_index = randi() % player_characters.size() - 1  # Genera un número aleatorio entre 0 y 2
 	
 	Global.current_target = player_characters[random_index]
+	
+	Global.calculate_multiplier(Global.current_attacker.attack_type)
 	
 	await Global.current_attacker.attack_target()
 	

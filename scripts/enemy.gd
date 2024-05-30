@@ -6,6 +6,10 @@ func _ready():
 	max_health = 200
 	additional_turns = 1
 	additional_turns_pred = 1
+	resistance = [Global.TypeOfDamage.MAGICAL]
+	weakness = [Global.TypeOfDamage.PHYSICAL]
+	strength = [Global.TypeOfDamage.MAGICAL]
+	attack_type = Global.TypeOfDamage.MAGICAL
 	var spr_1 = load("res://graphics/battle/enemy/enemy.png")
 	# Invertir el sprite para que mire hacia la izquierda
 	animation_player = $AnimationPlayer2
