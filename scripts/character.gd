@@ -3,11 +3,13 @@ extends Node2D
 class_name Character
 
 # Propiedades del personaje
-var character_name: String
+var character_name: String = "dummy"
 var health: int = 100
 var max_health: int = 100
 var attack: int = 10
 var defense: int = 5
+var order: int = 0
+var state: Global.CharaState = Global.CharaState.ALIVE
 var is_player: bool = true
 var is_selected: bool = false
 var is_defending: bool = false
@@ -16,6 +18,7 @@ var weakness: Array[Global.TypeOfDamage] = [Global.TypeOfDamage.MAGICAL]
 var strength: Array[Global.TypeOfDamage] = [Global.TypeOfDamage.PHYSICAL]
 var additional_turns: int = 0
 var additional_turns_pred: int = 0
+var portrait = load("res://graphics/battle/characters/portrait.png")
 
 # Bandera para habilitar la selección de objetivos
 var selecting_target: bool = false
@@ -53,10 +56,10 @@ func calculate_attack_and_hit_target():
 	if Global.current_target.is_defending == true:
 		actual_damage = actual_damage/2
 	# Reproducir la animación de recibir daño del objetivo
-	await Global.current_target.play_animation("hit")
+	Global.current_target.play_animation("hit")
 	
 	# Aplicar el daño al objetivo
-	await Global.current_target.take_damage(int(actual_damage))
+	Global.current_target.take_damage(int(actual_damage))
 	
 	# Esperar a que la animación de recibir daño termine
 	await Global.current_target.animation_player.animation_finished
@@ -65,8 +68,11 @@ func calculate_attack_and_hit_target():
 func attack_target() -> void:
 	await Global.await_current_target_animation()
 	# Reproducir la animación de ataque del atacante
-	await play_animation("attack")
-	
+	play_animation("attack")
+	if Global.current_attacker:
+		print("current attacker: " + Global.current_attacker.character_name)
+	if Global.current_target:
+		print("current target: " + Global.current_target.character_name)
 	# Esperar a que la animación de ataque termine
 	await animation_player.animation_finished
 	

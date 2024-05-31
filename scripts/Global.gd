@@ -15,6 +15,12 @@ enum TypeOfHability {
 	SUPPORT
 }
 
+enum CharaState {
+	ALIVE,
+	DEFENDING,
+	DEATH
+}
+
 var current_attacker: Character
 var current_target: Character
 var current_multiplier = 3

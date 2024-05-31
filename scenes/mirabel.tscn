@@ -1,9 +1,11 @@
-[gd_scene load_steps=3 format=3 uid="uid://sdw6wr02675n"]
+[gd_scene load_steps=4 format=3 uid="uid://sdw6wr02675n"]
 
 [ext_resource type="PackedScene" uid="uid://chuc6vfp2wagp" path="res://scenes/character.tscn" id="1_b8rcx"]
+[ext_resource type="Script" path="res://scripts/mirabel.gd" id="2_n2ki8"]
 [ext_resource type="Texture2D" uid="uid://c6yknww77kgfw" path="res://graphics/battle/characters/character3.png" id="2_y0lhk"]
 
 [node name="character" instance=ExtResource("1_b8rcx")]
+script = ExtResource("2_n2ki8")
 
 [node name="Sprite2D" parent="." index="0"]
 texture = ExtResource("2_y0lhk")

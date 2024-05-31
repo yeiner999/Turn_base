@@ -9,12 +9,14 @@ extends Node
 @onready var ui_button3 = $CanvasLayer/MarginContainer/BoxContainer/Button3
 @onready var ui_button4 = $CanvasLayer/MarginContainer/BoxContainer/Button4
 @onready var ui_button5 = $CanvasLayer/MarginContainer/BoxContainer/Button5
+@onready var ui_player_data = $CanvasLayer/Panel/playableCharData
+@onready var ui_enemy_data = $CanvasLayer/Panel/enemyCharData
 
 # Referencias a los personajes
 var player_characters: Array[Character] = []
-var fallen_characters: Array[Character] = []
+#var fallen_characters: Array[Character] = []
 var enemy_characters: Array[Character] = []
-var fallen_enemies: Array[Character] = []
+#var fallen_enemies: Array[Character] = []
 var current_turn_index: int = 0
 var enemy_current_turn_index: int = 0
 var battle_turn: int = 1
@@ -26,10 +28,6 @@ enum BattleState {
 	ENEMY_TURN,
 	WIN,
 	LOSE
-}
-
-enum CharaState {
-	DEFENDING
 }
 
 var state = BattleState.START
@@ -45,7 +43,9 @@ func _process(delta):
 	_actualice_health()
 	_actualice_health_enemy()
 	_actualice_turn()
+	update_character_ui()
 	
+
 #Actualiza turno
 func _actualice_turn():
 	if state == BattleState.PLAYER_TURN:
@@ -61,10 +61,7 @@ func _actualice_health():
 			label.text = str(player.health)  # Ejemplo de manipulación del Label
 		#self.$Label.text = str(player.health)
 		if player.health == 0:
-			# Eliminar al player del array player_characters
-			player_characters.erase(player)
-			# Agregar al player al array fallen_characters
-			fallen_characters.append(player)
+			player.state = Global.CharaState.DEATH
 	
 # Actualiza salud enemigo
 func _actualice_health_enemy():
@@ -74,10 +71,7 @@ func _actualice_health_enemy():
 			label.text = str(enemy.health)  # Ejemplo de manipulación del Label
 		#self.$Label.text = str(player.health)
 		if enemy.health == 0:
-			# Eliminar al player del array player_characters
-			enemy_characters.erase(enemy)
-			# Agregar al player al array fallen_characters
-			fallen_enemies.append(enemy)
+			enemy.state = Global.CharaState.DEATH
 
 
 # Inicializa la batalla
@@ -105,19 +99,81 @@ func _setup_ui():
 	ui_button3.connect("pressed", Callable(self, "_on_hability1_button_pressed"))
 	ui_button4.connect("pressed", Callable(self, "_on_hability2_button_pressed"))
 	ui_button5.connect("pressed", Callable(self, "_on_hability3_button_pressed"))
+	
+	update_character_ui()
 	# Conectar el resto de botones aquí
 
+# Llama a esta función cuando se actualicen los arrays de personajes
+func update_character_ui():
+	# Limpiar el contenedor de personajes jugables
+	for child in ui_player_data.get_children():
+		ui_player_data.remove_child(child)
+		child.queue_free()
+
+	# Limpiar el contenedor de personajes enemigos
+	for child in ui_enemy_data.get_children():
+		ui_enemy_data.remove_child(child)
+		child.queue_free()
+
+	# Añadir los personajes jugables
+	for character in player_characters:
+		var char_info
+		if character.state == Global.CharaState.DEATH:
+			char_info = create_character_info(character, true)
+		else :
+			char_info = create_character_info(character)
+		ui_player_data.add_child(char_info)
+
+	# Añadir los personajes enemigos
+	for character in enemy_characters:
+		var char_info
+		if character.state == Global.CharaState.DEATH:
+			char_info = create_character_info(character, true)
+		else :
+			char_info = create_character_info(character)
+		ui_enemy_data.add_child(char_info)
+
+# Crear un HBoxContainer con la información del personaje
+func create_character_info(character: Character, fallen = false):
+	var char_info = HBoxContainer.new()
+
+	# Añadir el retrato del personaje
+	var portrait = TextureRect.new()
+	portrait.texture = character.portrait  # Asume que el objeto 'character' tiene una propiedad 'portrait'
+	char_info.add_child(portrait)
+
+	# Añadir los datos del personaje
+	var vbox = VBoxContainer.new()
+	
+	var label_name = Label.new()
+	label_name.text = character.character_name
+	 # Cambiar el color del texto si el personaje está caído
+	if fallen:
+		label_name.add_theme_color_override("font_color", Color(1, 0, 0))
+
+	vbox.add_child(label_name)
+	
+	var label_health = Label.new()
+	label_health.text = str(character.health)
+	vbox.add_child(label_health)
+	
+	char_info.add_child(vbox)
+
+	return char_info
 # Gestiona el turno del jugador
 func _player_turn():
 	if _is_battle_over():
 		return
 
-	var attacker = player_characters[current_turn_index]
-	Global.current_attacker = attacker
+	if player_characters[current_turn_index]["state"] == Global.CharaState.DEATH:
+		_end_turn()
+		return
+	
+	Global.current_attacker = player_characters[current_turn_index]
 	
 	await Global.await_current_target_animation()
 		
-	_show_action_buttons(attacker)
+	_show_action_buttons(Global.current_attacker)
 
 func _show_action_buttons(attacker: Character):
 	ui_button1.text = attacker.attack_name
@@ -168,7 +224,8 @@ func _show_target_selection(targets: Array):
 	selecting_target = true
 	ui_container.visible = false
 	for character in targets:
-		character.selecting_target = true
+		if character.state != Global.CharaState.DEATH:
+			character.selecting_target = true
 
 # Procesar selección de objetivo
 func _on_target_selected(target):
@@ -195,7 +252,7 @@ func _end_turn():
 		Global.current_attacker.additional_turns -= 1
 	else:
 		current_turn_index += 1
-		if current_turn_index >= player_characters.size():
+		if current_turn_index > player_characters.size() - 1:
 			current_turn_index = 0
 			state = BattleState.ENEMY_TURN
 			_enemy_turn()
@@ -205,7 +262,7 @@ func _end_turn():
 		
 func _enemy_end_turn():
 	enemy_current_turn_index += 1
-	if enemy_current_turn_index >= enemy_characters.size():
+	if enemy_current_turn_index > enemy_characters.size() - 1:
 		enemy_current_turn_index = 0
 		state = BattleState.PLAYER_TURN
 		
@@ -213,6 +270,7 @@ func _enemy_end_turn():
 			player.is_defending = false
 		_player_turn()
 		battle_turn += 1
+		return
 	else:
 		_enemy_turn()
 
@@ -221,7 +279,13 @@ func _enemy_turn():
 	if _is_battle_over():
 		return
 		
+	if enemy_characters[enemy_current_turn_index]["state"] == Global.CharaState.DEATH:
+		_enemy_end_turn()
+		return
+	
 	Global.current_attacker = enemy_characters[enemy_current_turn_index]
+	
+	await Global.await_current_target_animation()
 	
 	var random_index = randi() % player_characters.size() - 1  # Genera un número aleatorio entre 0 y 2
 	
