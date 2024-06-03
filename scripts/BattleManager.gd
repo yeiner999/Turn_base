@@ -1,7 +1,7 @@
 extends Node
 
 # Referencias a la ui
-@onready var ui_turn_label = $CanvasLayer/Label
+@onready var ui_turn_label = $CanvasLayer/topContainer/turnPanel/Label
 @onready var ui_container = $CanvasLayer/MarginContainer/BoxContainer
 @onready var ui_container_margin = $CanvasLayer/MarginContainer
 @onready var ui_button1 = $CanvasLayer/MarginContainer/BoxContainer/Button

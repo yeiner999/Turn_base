@@ -1,6 +1,5 @@
-[gd_scene load_steps=9 format=3 uid="uid://cefkwlfciae4e"]
+[gd_scene load_steps=10 format=3 uid="uid://cefkwlfciae4e"]
 
-[ext_resource type="Texture2D" uid="uid://mpghgnyq8js7" path="res://graphics/battle/backgrounds/bg.png" id="1_gnbpk"]
 [ext_resource type="Script" path="res://scripts/BattleManager.gd" id="1_jjhwe"]
 [ext_resource type="PackedScene" uid="uid://gd6dpv7cro7d" path="res://scenes/battle_ui.tscn" id="2_4eh65"]
 [ext_resource type="PackedScene" uid="uid://dfgek6mcnrvlr" path="res://scenes/hector.tscn" id="3_dfrat"]
@@ -9,12 +8,26 @@
 [ext_resource type="PackedScene" uid="uid://dvi3gkjhytap7" path="res://scenes/enemy1.tscn" id="6_am0gb"]
 [ext_resource type="PackedScene" uid="uid://5tsnvl7eobnm" path="res://scenes/enemy2.tscn" id="7_xof66"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_n8q56"]
+resource_local_to_scene = true
+bg_color = Color(0.6, 0.819608, 0.6, 1)
+border_width_left = 5
+border_width_top = 5
+border_width_right = 5
+border_width_bottom = 5
+border_color = Color(0.000693897, 0.000693898, 0.000693897, 1)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hn2se"]
+content_margin_left = 24.0
+content_margin_top = 24.0
+content_margin_right = 24.0
+content_margin_bottom = 24.0
+
 [node name="battle_scene" type="Node2D"]
 script = ExtResource("1_jjhwe")
 
 [node name="background" type="Sprite2D" parent="."]
 position = Vector2(960, 540)
-texture = ExtResource("1_gnbpk")
 metadata/_edit_lock_ = true
 
 [node name="character" parent="." instance=ExtResource("3_dfrat")]
@@ -41,15 +54,48 @@ scale = Vector2(0.624299, 0.451732)
 
 [node name="MarginContainer" parent="CanvasLayer" instance=ExtResource("2_4eh65")]
 
-[node name="Label" type="Label" parent="CanvasLayer"]
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -20.0
-offset_right = 20.0
-offset_bottom = 23.0
+[node name="topContainer" type="HBoxContainer" parent="CanvasLayer"]
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 100.0
 grow_horizontal = 2
-theme_override_font_sizes/font_size = 70
+theme_override_constants/separation = 2
+
+[node name="turnPanel" type="Panel" parent="CanvasLayer/topContainer"]
+custom_minimum_size = Vector2(480, 100)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_n8q56")
+
+[node name="Label" type="Label" parent="CanvasLayer/topContainer/turnPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 40
+text = "turno 1"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="messagePanel" type="Panel" parent="CanvasLayer/topContainer"]
+custom_minimum_size = Vector2(1200, 100)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_n8q56")
+
+[node name="Label" type="Label" parent="CanvasLayer/topContainer/messagePanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 40
+theme_override_styles/normal = SubResource("StyleBoxEmpty_hn2se")
+text = "mensaje aqui"
+vertical_alignment = 1
+autowrap_mode = 3
 
 [node name="Panel" type="Panel" parent="CanvasLayer"]
 anchors_preset = 12
