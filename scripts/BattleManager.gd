@@ -385,6 +385,18 @@ func _on_target_selected(target):
 	ui_container.visible = true
 	_end_turn()
 	
+# ir hacia atras
+func _input(event):
+	if event is InputEventMouseButton and selecting_target:
+		if event.button_index == MOUSE_BUTTON_RIGHT and event.pressed:
+			for character in player_characters + enemy_characters + ui_player_data.get_children():
+				character.selecting_target = false
+				character._set_highlight(false)
+				
+			ui_skill_container.visible = false
+			selecting_target = false
+			_show_action_buttons(Global.current_attacker)
+	
 func _await_all_and_reset_message_label():
 	await await_battle_animation()
 	await Global.await_current_target_animation()

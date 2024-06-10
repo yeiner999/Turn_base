@@ -52,7 +52,7 @@ func turn_buff(target):
 	emit_signal("reproduce_external_animation", "player_buff")
 	target.apply_effect(buff_turns_effect_local)
 	
-var turn_buff_description = "Actua 3 veces por turno"
+var turn_buff_description = "Actua 3 veces por turno por 3 turnos"
 
 var turn_buff_name = "Aceleración"
 	
