@@ -11,13 +11,14 @@ config_version=5
 [application]
 
 config/name="turn base"
-run/main_scene="res://scenes/battle_scene.tscn"
+run/main_scene="res://scenes/main_menu.tscn"
 config/features=PackedStringArray("4.2", "GL Compatibility")
 config/icon="res://icon.svg"
 
 [autoload]
 
 Global="*res://scripts/Global.gd"
+Skills="*res://scripts/skills.gd"
 
 [display]
 

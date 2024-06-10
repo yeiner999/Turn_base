@@ -38,5 +38,8 @@ func calculate_multiplier(typeOfAttack: TypeOfDamage) -> void:
 		multiplier += 0.5
 	if current_attacker.strength.has(typeOfAttack):
 		multiplier += 1.2
+		
+	if multiplier == 0:
+		multiplier = 1
 	
 	current_multiplier = multiplier

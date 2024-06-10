@@ -20,17 +20,26 @@ var additional_turns: int = 0
 var additional_turns_pred: int = 0
 var portrait = load("res://graphics/battle/characters/portrait.png")
 
+var effects: Array = []
+
 # Bandera para habilitar la selección de objetivos
 var selecting_target: bool = false
 
 # habilidades
 var attack_name: String = "Ataque Perforante"
+var attack_description: String = "Ataque Perforante"
 var attack_type: Global.TypeOfDamage = Global.TypeOfDamage.PHYSICAL
+
 var hability1_name: String = "habilidad 1"
-var hability2_name: String = "habilidad 2"
-var hability3_name: String = "habilidad 3"
+var hability1_description: String = "habilidad 1"
 var hability1_type: Global.TypeOfHability = Global.TypeOfHability.SUPPORT
+
+var hability2_name: String = "habilidad 2"
+var hability2_description: String = "habilidad 2"
 var hability2_type: Global.TypeOfDamage = Global.TypeOfDamage.PHYSICAL
+
+var hability3_name: String = "habilidad 3"
+var hability3_description: String = "habilidad 3"
 var hability3_type: Global.TypeOfDamage = Global.TypeOfDamage.PHYSICAL
 
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
@@ -38,6 +47,31 @@ var hability3_type: Global.TypeOfDamage = Global.TypeOfDamage.PHYSICAL
 func play_animation(animation_name: String) -> void:
 	if animation_player.has_animation(animation_name):
 		animation_player.play(animation_name)
+
+func apply_effect(effect: Effect):
+	var existing_effect = null
+	
+	for current_effect in effects:
+		if current_effect.effect_name == effect.effect_name:
+			existing_effect = current_effect
+			break
+			
+	if existing_effect:
+		existing_effect.duration += effect.duration
+	else:
+		effects.append(effect)
+		effect.apply_effect.call(self)
+
+func update_effects():
+	for effect in effects:
+		effect.duration -= 1
+		if effect.duration < 1:
+			effect.remove_effect.call(self)
+			effects.erase(effect)
+			print("efecto borrado")
+			return
+		effect.apply_effect.call(self)
+		
 
 # Método para recibir daño
 func take_damage(damage: int) -> void:
@@ -50,43 +84,50 @@ func heal(amount: int) -> void:
 	if health > max_health:
 		health = max_health
 
-	
 func calculate_attack_and_hit_target():
 	var actual_damage = max(0, (Global.current_attacker.attack - Global.current_target.defense) * Global.current_multiplier)
 	if Global.current_target.is_defending == true:
 		actual_damage = actual_damage/2
-	# Reproducir la animación de recibir daño del objetivo
-	Global.current_target.play_animation("hit")
 	
+	# Reproducir la animación de recibir daño del objetivo
+	emit_signal("reproduce_external_animation", "screen_shake")
+		
 	# Aplicar el daño al objetivo
 	Global.current_target.take_damage(int(actual_damage))
 	
-	# Esperar a que la animación de recibir daño termine
-	await Global.current_target.animation_player.animation_finished
 
 # Método para atacar a otro personaje
 func attack_target() -> void:
-	await Global.await_current_target_animation()
+	Global.calculate_multiplier(Global.current_attacker.attack_type)
+	#await Global.await_current_target_animation()
 	# Reproducir la animación de ataque del atacante
-	play_animation("attack")
-	if Global.current_attacker:
-		print("current attacker: " + Global.current_attacker.character_name)
-	if Global.current_target:
-		print("current target: " + Global.current_target.character_name)
-	# Esperar a que la animación de ataque termine
-	await animation_player.animation_finished
+	#play_animation("attack")
+	#if Global.current_attacker:
+		#print("atacante " + Global.current_attacker.character_name + " este es jugador? " + str(Global.current_attacker.is_player))
+		
+	#if Global.current_target:
+		#print("atacado " + Global.current_target.character_name + " este es jugador? " + str(Global.current_target.is_player))
+	if Global.current_attacker.is_player:
+		emit_signal("reproduce_external_animation", "player_attack_basic")
+		emit_signal("await_external_animation")
+		return
+	else:
+		play_animation("attack")
+		await animation_player.animation_finished
+	
+	
 	
 
 func support_target(target: Character, property, value):
 	target[property] += value
 	
 func hability1(target: Character):
-	support_target(target, "additional_turns", 1)
+	print("1")
 	
-func hability2():
+func hability2(target: Character):
 	print("2")
 	
-func hability3():
+func hability3(target: Character):
 	print("3")
 	
 
@@ -103,7 +144,7 @@ func _on_mouse_exited():
 	if selecting_target:
 		_set_highlight(false)
 
-func _on_input_event(viewport, event, shape_idx):
+func _on_input_event(_viewport, event, _shape_idx):
 	if selecting_target and event is InputEventMouseButton and event.pressed:
 		emit_signal("target_selected", self)
 
@@ -111,8 +152,15 @@ func _set_highlight(enabled: bool):
 	if enabled:
 		$Sprite2D.modulate = Color(1, 1, 1, 0.5)  # Cambia la transparencia o color del sprite para resaltar
 		$focus.visible = true
+		$Label.visible = true
 	else:
 		$Sprite2D.modulate = Color(1, 1, 1, 1)  # Vuelve al color original
 		$focus.visible = false
+		$Label.visible = false
+		
+func _reproduce_external_animation(anim):
+	emit_signal("reproduce_external_animation", anim)
 
 signal target_selected(character)
+signal reproduce_external_animation(anim)
+signal await_external_animation()

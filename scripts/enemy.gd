@@ -11,8 +11,6 @@ func _ready():
 	weakness = [Global.TypeOfDamage.PHYSICAL]
 	strength = [Global.TypeOfDamage.MAGICAL]
 	attack_type = Global.TypeOfDamage.MAGICAL
-	var spr_1 = load("res://graphics/battle/enemy/enemy.png")
 	# Invertir el sprite para que mire hacia la izquierda
-	animation_player = $AnimationPlayer2
 	#$Sprite2D.texture = spr_1
 	#$Area2D/CollisionShape2D.scale = Vector2(40, 40)
