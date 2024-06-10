@@ -32,14 +32,17 @@ var attack_type: Global.TypeOfDamage = Global.TypeOfDamage.PHYSICAL
 
 var hability1_name: String = "habilidad 1"
 var hability1_description: String = "habilidad 1"
-var hability1_type: Global.TypeOfHability = Global.TypeOfHability.SUPPORT
+var hability1_core_type: Global.TypeOfHability = Global.TypeOfHability.SUPPORT
+var hability1_type: Global.TypeOfDamage = Global.TypeOfDamage.NONE
 
 var hability2_name: String = "habilidad 2"
 var hability2_description: String = "habilidad 2"
+var hability2_core_type: Global.TypeOfHability = Global.TypeOfHability.ATTACK
 var hability2_type: Global.TypeOfDamage = Global.TypeOfDamage.PHYSICAL
 
 var hability3_name: String = "habilidad 3"
 var hability3_description: String = "habilidad 3"
+var hability3_core_type: Global.TypeOfHability = Global.TypeOfHability.ATTACK
 var hability3_type: Global.TypeOfDamage = Global.TypeOfDamage.PHYSICAL
 
 @onready var animation_player: AnimationPlayer = $AnimationPlayer

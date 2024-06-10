@@ -119,7 +119,7 @@ func calculate_attack_and_hit_target():
 	
 	#print("atacante " + Global.current_attacker.character_name + " este es jugador? " + str(Global.current_attacker.is_player))
 	#print("atacado " + Global.current_target.character_name + " este es jugador? " + str(Global.current_target.is_player))
-	
+	await await_battle_animation()
 	# Reproducir la animación de recibir daño del objetivo
 	Global.current_target.play_animation("hit")
 	
@@ -128,7 +128,7 @@ func calculate_attack_and_hit_target():
 	
 	# Esperar a que la animación de recibir daño termine
 	await Global.await_current_target_animation()
-	await await_battle_animation()
+	
 
 # Configuración de la UI
 func _setup_ui():
@@ -308,14 +308,22 @@ func _on_hability1_button_pressed():
 	#attacker.hability1()
 	#_end_turn()
 	current_action = "skill1"
-	_show_ui_target_selection(ui_player_data.get_children())
+	if Global.current_attacker.hability1_core_type == Global.TypeOfHability.SUPPORT:
+		_show_ui_target_selection(ui_player_data.get_children())
+	
+	if Global.current_attacker.hability1_core_type == Global.TypeOfHability.ATTACK:
+		_show_target_selection(enemy_characters)
 	
 func _on_hability2_mouse_entered():
 		ui_message_label.text = Global.current_attacker.hability2_description
 	
 func _on_hability2_button_pressed():
 	current_action = "skill2"
-	_show_target_selection(enemy_characters)
+	if Global.current_attacker.hability2_core_type == Global.TypeOfHability.SUPPORT:
+		_show_ui_target_selection(ui_player_data.get_children())
+	
+	if Global.current_attacker.hability2_core_type == Global.TypeOfHability.ATTACK:
+		_show_target_selection(enemy_characters)
 	
 func _on_hability3_mouse_entered():
 	ui_message_label.text = Global.current_attacker.hability3_description
@@ -374,11 +382,14 @@ func _on_target_selected(target):
 	if current_action == "button1":
 		ui_message_label.text = Global.current_attacker.attack_name
 		await Global.current_attacker.attack_target()
-		await _await_all_and_reset_message_label()
+		
 	elif current_action == "skill2":
 		ui_message_label.text = Global.current_attacker.hability2_name
 		await Global.current_attacker.hability2(target)
-		await _await_all_and_reset_message_label()
+		
+		
+	await calculate_attack_and_hit_target()
+	await _await_all_and_reset_message_label()
 		
 	Global.current_target.get_node("Label").visible = false
 			

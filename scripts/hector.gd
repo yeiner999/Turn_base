@@ -18,10 +18,12 @@ func _ready():
 	
 	hability1_name = Skills.turn_buff_name
 	hability1_description = Skills.turn_buff_description
-	hability1_type = Global.TypeOfHability.SUPPORT
+	hability1_core_type = Global.TypeOfHability.SUPPORT
+	hability1_type = Global.TypeOfDamage.NONE
 	
 	hability2_name = Skills.ultra_pierce_attack_name
 	hability2_description = Skills.ultra_pierce_attack_description
+	hability2_core_type = Global.TypeOfHability.ATTACK
 	hability2_type = Global.TypeOfDamage.PIERCING
 	
 func hability1(target: Character):

@@ -65,7 +65,6 @@ func ultra_pierce_attack(target):
 	
 	emit_signal("reproduce_external_animation", "myriad_slashes")
 	emit_signal("await_external_animation")
-	emit_signal("_calculate_damage")
 	
 var ultra_pierce_attack_description = "Perfora al enemigo muchas veces"
 

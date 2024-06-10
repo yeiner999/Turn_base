@@ -7,7 +7,8 @@ enum TypeOfDamage {
 	PHYSICAL,
 	MAGICAL,
 	ILLUSORY,
-	PIERCING
+	PIERCING,
+	NONE
 }
 
 enum TypeOfHability {
