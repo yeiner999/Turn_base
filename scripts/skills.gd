@@ -71,7 +71,32 @@ var ultra_pierce_attack_description = "Perfora al enemigo muchas veces"
 var ultra_pierce_attack_name = "Myriad slashes"
 	
 	
+#skill magic inmunity
+func apply_magic_inmunity_effect(target):
+	if not target.inmunity.has(Global.TypeOfDamage.MAGICAL):
+		target.inmunity.append(Global.TypeOfDamage.MAGICAL)
+
+	var duration_local = 0
+	for effect_local in target.effects:
+		if effect_local.effect_name == "magic_inmunity":
+			duration_local = effect_local.duration
+			break
+			
+	print(target.character_name + " is magic inmune now for " + str(duration_local) + " turns")
+
+func remove_magic_inmunity_effect(target):
+	target.inmunity.erase(Global.TypeOfDamage.MAGICAL)
+	print(target.character_name + " is no longer magic inmune.")
 	
+
+func magic_inmunity(target):
+	var magic_inmunity_effect_local = effect.new("magic_inmunity", 3, 3, Callable(self, "apply_magic_inmunity_effect"), Callable(self, "remove_magic_inmunity_effect"))
+	emit_signal("reproduce_external_animation", "player_buff")
+	target.apply_effect(magic_inmunity_effect_local)
+	
+var magic_inmunity_description = "Otorga inmunidad a la magia por 3 turnos"
+
+var magic_inmunity_name = "Escudo Magico"
 	
 	
 	

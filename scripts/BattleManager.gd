@@ -329,9 +329,12 @@ func _on_hability3_mouse_entered():
 	ui_message_label.text = Global.current_attacker.hability3_description
 	
 func _on_hability3_button_pressed():
-	var attacker = player_characters[current_turn_index]
-	attacker.hability3(Global.current_attacker)
-	_end_turn()
+	current_action = "skill3"
+	if Global.current_attacker.hability3_core_type == Global.TypeOfHability.SUPPORT:
+		_show_ui_target_selection(ui_player_data.get_children())
+	
+	if Global.current_attacker.hability3_core_type == Global.TypeOfHability.ATTACK:
+		_show_target_selection(enemy_characters)
 	
 # Mostrar selección de objetivo
 func _show_target_selection(targets: Array):
@@ -365,6 +368,10 @@ func  _on_ui_target_selected(target):
 		ui_message_label.text = Global.current_attacker.hability2_name
 		await Global.current_attacker.hability2(target)
 		await _await_all_and_reset_message_label()
+	elif current_action == "skill3":
+		ui_message_label.text = Global.current_attacker.hability3_name
+		await Global.current_attacker.hability3(target)
+		await _await_all_and_reset_message_label()
 	ui_container.visible = true
 	_end_turn()
 
@@ -383,9 +390,17 @@ func _on_target_selected(target):
 		ui_message_label.text = Global.current_attacker.attack_name
 		await Global.current_attacker.attack_target()
 		
+	elif current_action == "skill1":
+		ui_message_label.text = Global.current_attacker.hability1_name
+		await Global.current_attacker.hability1(target)
+		
 	elif current_action == "skill2":
 		ui_message_label.text = Global.current_attacker.hability2_name
 		await Global.current_attacker.hability2(target)
+		
+	elif current_action == "skill3":
+		ui_message_label.text = Global.current_attacker.hability3_name
+		await Global.current_attacker.hability3(target)
 		
 		
 	await calculate_attack_and_hit_target()

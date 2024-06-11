@@ -16,6 +16,7 @@ var is_defending: bool = false
 var resistance: Array[Global.TypeOfDamage] = [Global.TypeOfDamage.PHYSICAL]
 var weakness: Array[Global.TypeOfDamage] = [Global.TypeOfDamage.MAGICAL]
 var strength: Array[Global.TypeOfDamage] = [Global.TypeOfDamage.PHYSICAL]
+var inmunity: Array[Global.TypeOfDamage] = [Global.TypeOfDamage.ILLUSORY]
 var additional_turns: int = 0
 var additional_turns_pred: int = 0
 var portrait = load("res://graphics/battle/characters/portrait.png")

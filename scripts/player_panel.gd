@@ -2,6 +2,9 @@ extends Panel
 
 signal ui_target_selected(character)
 
+@onready var ui_selected = $Panel
+@onready var target_indicator = $Panel2
+
 var selecting_target = false
 var alive = true
 var reference_character
@@ -11,6 +14,12 @@ func _ready():
 	set_mouse_filter(Control.MOUSE_FILTER_PASS)
 	connect("mouse_entered",Callable(self, "_on_mouse_entered"))
 	connect("mouse_exited", Callable(self, "_on_mouse_exited"))
+	
+func _process(_delta):
+	if Global.current_target == reference_character and not Global.current_attacker.is_player:
+		target_indicator.visible = true
+	else:
+		target_indicator.visible = false
 
 func _gui_input(event):
 	if event is InputEventMouseButton and event.pressed and selecting_target:
@@ -26,6 +35,6 @@ func _on_mouse_exited():
 
 func _set_highlight(enabled: bool):
 	if enabled:
-		$Panel.visible = true
+		ui_selected.visible = true
 	else:
-		$Panel.visible = false
+		ui_selected.visible = false

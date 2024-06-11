@@ -32,15 +32,14 @@ func await_current_target_animation() -> void:
 			await Global.current_target.animation_player.animation_finished
 
 func calculate_multiplier(typeOfAttack: TypeOfDamage) -> void:
-	var multiplier: float = 0
+	var multiplier: float = 1
 	if current_target.weakness.has(typeOfAttack):
 		multiplier += 1.5
 	if current_target.resistance.has(typeOfAttack):
-		multiplier += 0.5
+		multiplier -= 0.5
 	if current_attacker.strength.has(typeOfAttack):
 		multiplier += 1.2
-		
-	if multiplier == 0:
-		multiplier = 1
+	if current_target.inmunity.has(typeOfAttack):
+		multiplier = 0
 	
 	current_multiplier = multiplier

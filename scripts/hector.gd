@@ -26,8 +26,16 @@ func _ready():
 	hability2_core_type = Global.TypeOfHability.ATTACK
 	hability2_type = Global.TypeOfDamage.PIERCING
 	
+	hability3_name = Skills.magic_inmunity_name
+	hability3_description = Skills.magic_inmunity_description
+	hability3_core_type = Global.TypeOfHability.SUPPORT
+	hability3_type = Global.TypeOfDamage.NONE
+	
 func hability1(target: Character):
 	Skills.turn_buff(target)
 	
 func hability2(target: Character):
 	Skills.ultra_pierce_attack(target)
+	
+func hability3(target: Character):
+	Skills.magic_inmunity(target)
