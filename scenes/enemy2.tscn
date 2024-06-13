@@ -15,7 +15,11 @@ position = Vector2(0, 0)
 scale = Vector2(0.4, 0.4)
 texture = ExtResource("3_yddc5")
 
+[node name="focus" parent="." index="1"]
+position = Vector2(5.96046e-08, -342)
+
 [node name="Label" parent="." index="2"]
+visible = false
 offset_left = -30.0
 offset_top = -241.0
 offset_right = 39.0
@@ -24,3 +28,10 @@ offset_bottom = -186.0
 [node name="CollisionShape2D" parent="Area2D" index="0"]
 position = Vector2(5, 0)
 shape = SubResource("RectangleShape2D_o7qxt")
+
+[node name="Marker2D" parent="." index="5"]
+position = Vector2(-32, -432)
+
+[node name="health" parent="." index="6"]
+offset_top = -271.0
+offset_bottom = -244.0

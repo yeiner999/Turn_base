@@ -59,7 +59,6 @@ var turn_buff_name = "Aceleración"
 #ultra pierce attack
 func ultra_pierce_attack(target):
 	Global.calculate_multiplier(Global.TypeOfDamage.PIERCING)
-	Global.current_multiplier += 5
 	
 	Global.current_target = target
 	
@@ -69,6 +68,8 @@ func ultra_pierce_attack(target):
 var ultra_pierce_attack_description = "Perfora al enemigo muchas veces"
 
 var ultra_pierce_attack_name = "Myriad slashes"
+
+var ultra_pierce_attack_damage = 3
 	
 	
 #skill magic inmunity

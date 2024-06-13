@@ -77,7 +77,7 @@ func _actualice_health():
 # Actualiza salud enemigo
 func _actualice_health_enemy():
 	for enemy in enemy_characters:
-		var label = enemy.get_node("Label")  # Asegúrate de que la ruta es correcta
+		var label = enemy.get_node("health/Label")  # Asegúrate de que la ruta es correcta
 		if label:
 			label.text = str(enemy.health)  # Ejemplo de manipulación del Label
 		#self.$Label.text = str(player.health)
@@ -112,19 +112,42 @@ func await_battle_animation() -> void:
 		animations.visible = false
 			
 func calculate_attack_and_hit_target():
-	var actual_damage = max(0, (Global.current_attacker.attack - Global.current_target.defense) * Global.current_multiplier)
+	var attack_multi = 1
+	
+	if Global.current_attacker.current_attack == Global.CurrentAttack.ATTACK:
+		attack_multi = 1
+		
+	if Global.current_attacker.current_attack == Global.CurrentAttack.SKILL1:
+		attack_multi = Global.current_attacker.hability1_damage
+		
+	if Global.current_attacker.current_attack == Global.CurrentAttack.SKILL2:
+		attack_multi = Global.current_attacker.hability2_damage
+		
+	if Global.current_attacker.current_attack == Global.CurrentAttack.SKILL3:
+		attack_multi = Global.current_attacker.hability3_damage
+		
+	
+	var actual_damage = max(0, (Global.current_attacker.attack * attack_multi - Global.current_target.defense) * Global.current_multiplier)
 	if Global.current_target.is_defending == true:
 		actual_damage = actual_damage/2
-	
-	
+		
+	actual_damage = int(actual_damage)
 	#print("atacante " + Global.current_attacker.character_name + " este es jugador? " + str(Global.current_attacker.is_player))
 	#print("atacado " + Global.current_target.character_name + " este es jugador? " + str(Global.current_target.is_player))
 	await await_battle_animation()
+	
+	var damage_string = str(actual_damage)
+	
+	if actual_damage == 0:
+		damage_string = "Bloqueado"
+		
+	Global.display_damage(damage_string, Global.current_target.get_node("Marker2D").global_position)
+	
 	# Reproducir la animación de recibir daño del objetivo
 	Global.current_target.play_animation("hit")
 	
 	# Aplicar el daño al objetivo
-	Global.current_target.take_damage(int(actual_damage))
+	Global.current_target.take_damage(actual_damage)
 	
 	# Esperar a que la animación de recibir daño termine
 	await Global.await_current_target_animation()
@@ -207,30 +230,31 @@ func create_character_info(character: Character, fallen = false):
 	var char_info_pack = load("res://scenes/player_panel.tscn")
 	var char_info = char_info_pack.instantiate()
 	
-	var label_name = char_info.get_node("VBoxContainer/nameLabel")
+	var label_name = char_info.get_node("MarginContainer/VBoxContainer/nameLabel")
 	label_name.text = character.character_name
 	 # Cambiar el color del texto si el personaje está caído
 	if fallen:
 		label_name.add_theme_color_override("font_color", Color(1, 0, 0))
 		char_info.alive = false
 	
-	var label_health = char_info.get_node("VBoxContainer/hpLabel")
+	var label_health = char_info.get_node("MarginContainer/VBoxContainer/hpLabel")
 	label_health.text = str(character.health)
 	
+	character.reference_ui = char_info
 	char_info.reference_character = character
 
 	return char_info
 	
 func update_character_info(char_info, character: Character, fallen = false):
 	
-	var label_name = char_info.get_node("VBoxContainer/nameLabel")
+	var label_name = char_info.get_node("MarginContainer/VBoxContainer/nameLabel")
 	label_name.text = character.character_name
 	 # Cambiar el color del texto si el personaje está caído
 	if fallen:
 		label_name.add_theme_color_override("font_color", Color(1, 0, 0))
 		char_info.alive = false
 	
-	var label_health = char_info.get_node("VBoxContainer/hpLabel")
+	var label_health = char_info.get_node("MarginContainer/VBoxContainer/hpLabel")
 	label_health.text = str(character.health)
 
 	return char_info
@@ -384,7 +408,7 @@ func _on_target_selected(target):
 			
 	Global.current_target = target
 	
-	Global.current_target.get_node("Label").visible = true
+	Global.current_target.get_node("health").visible = true
 	
 	if current_action == "button1":
 		ui_message_label.text = Global.current_attacker.attack_name
@@ -406,7 +430,7 @@ func _on_target_selected(target):
 	await calculate_attack_and_hit_target()
 	await _await_all_and_reset_message_label()
 		
-	Global.current_target.get_node("Label").visible = false
+	Global.current_target.get_node("health").visible = false
 			
 	ui_container.visible = true
 	_end_turn()

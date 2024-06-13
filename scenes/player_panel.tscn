@@ -1,6 +1,7 @@
-[gd_scene load_steps=5 format=3 uid="uid://cce2ayh13ruks"]
+[gd_scene load_steps=6 format=3 uid="uid://cce2ayh13ruks"]
 
 [ext_resource type="Script" path="res://scripts/player_panel.gd" id="1_dj43c"]
+[ext_resource type="PackedScene" uid="uid://gqj3md4y3757" path="res://scenes/health.tscn" id="2_w5ykq"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_bxfw8"]
 size = Vector2(150, 153)
@@ -40,33 +41,39 @@ offset_right = 160.0
 offset_bottom = 160.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_geona")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
+[node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
 alignment = 1
 
-[node name="nameLabel" type="Label" parent="VBoxContainer"]
+[node name="nameLabel" type="Label" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 40
 text = "Emily"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="hpLabel" type="Label" parent="VBoxContainer"]
+[node name="hpLabel" type="Label" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 40
 text = "HP: 100"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="state" type="Label" parent="."]
-visible = false
-layout_mode = 0
-offset_left = 2.0
-offset_top = -42.0
-offset_right = 42.0
-offset_bottom = -19.0
+[node name="health" parent="MarginContainer/VBoxContainer" instance=ExtResource("2_w5ykq")]
+custom_minimum_size = Vector2(120, 20)
+layout_mode = 2
+
+[node name="Marker2D" type="Marker2D" parent="."]
+position = Vector2(54, -106)
