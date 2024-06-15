@@ -30,7 +30,7 @@ position = Vector2(5, -7)
 shape = SubResource("RectangleShape2D_ds7uw")
 
 [node name="Marker2D" parent="." index="5"]
-position = Vector2(-34, -438)
+position = Vector2(0, -350)
 
 [node name="health" parent="." index="6"]
 offset_left = -152.0

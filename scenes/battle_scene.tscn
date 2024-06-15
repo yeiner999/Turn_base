@@ -910,6 +910,7 @@ z_index = 10
 
 [node name="slash" type="AnimatedSprite2D" parent="animations"]
 visible = false
+texture_filter = 1
 position = Vector2(956, 890)
 scale = Vector2(15, 15)
 sprite_frames = SubResource("SpriteFrames_vcd4q")
@@ -919,12 +920,14 @@ flip_h = true
 
 [node name="buff" type="AnimatedSprite2D" parent="animations"]
 visible = false
+texture_filter = 1
 position = Vector2(897, 551)
 scale = Vector2(20, 20)
 sprite_frames = SubResource("SpriteFrames_ia7gc")
 
 [node name="defend" type="AnimatedSprite2D" parent="animations"]
 visible = false
+texture_filter = 1
 position = Vector2(939, 566)
 scale = Vector2(20, 20)
 sprite_frames = SubResource("SpriteFrames_i3rtc")

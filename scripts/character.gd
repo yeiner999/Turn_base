@@ -22,6 +22,7 @@ var additional_turns_pred: int = 0
 var portrait = load("res://graphics/battle/characters/portrait.png")
 var reference_ui
 var current_attack: Global.CurrentAttack 
+var current_attack_type: Global.TypeOfDamage
 
 @onready var health_bar = $health
 
@@ -81,7 +82,7 @@ func update_effects():
 			effects.erase(effect)
 			print("efecto borrado")
 			return
-		effect.apply_effect.call(self)
+		await effect.apply_effect.call(self)
 		
 
 # Método para recibir daño
@@ -134,6 +135,7 @@ func calculate_attack_and_hit_target():
 # Método para atacar a otro personaje
 func attack_target() -> void:
 	current_attack = Global.CurrentAttack.ATTACK
+	current_attack_type = Global.current_attacker.attack_type
 	Global.calculate_multiplier(Global.current_attacker.attack_type)
 	#await Global.await_current_target_animation()
 	# Reproducir la animación de ataque del atacante
@@ -159,14 +161,17 @@ func support_target(target: Character, property, value):
 	
 func hability1(target: Character):
 	current_attack = Global.CurrentAttack.SKILL1
+	current_attack_type = Global.current_attacker.hability1_type
 	print("1")
 	
 func hability2(target: Character):
 	current_attack = Global.CurrentAttack.SKILL2
+	current_attack_type = Global.current_attacker.hability2_type
 	print("2")
 	
 func hability3(target: Character):
 	current_attack = Global.CurrentAttack.SKILL3
+	current_attack_type = Global.current_attacker.hability3_type
 	print("3")
 	
 

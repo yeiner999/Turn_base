@@ -140,17 +140,18 @@ func calculate_attack_and_hit_target():
 	
 	if actual_damage == 0:
 		damage_string = "Bloqueado"
+	
+	if Global.current_attacker.current_attack_type != Global.TypeOfDamage.PERTURN:
+		Global.display_damage(damage_string, Global.current_target.get_node("Marker2D").global_position)
 		
-	Global.display_damage(damage_string, Global.current_target.get_node("Marker2D").global_position)
-	
-	# Reproducir la animación de recibir daño del objetivo
-	Global.current_target.play_animation("hit")
-	
-	# Aplicar el daño al objetivo
-	Global.current_target.take_damage(actual_damage)
-	
-	# Esperar a que la animación de recibir daño termine
-	await Global.await_current_target_animation()
+		# Reproducir la animación de recibir daño del objetivo
+		Global.current_target.play_animation("hit")
+		
+		# Aplicar el daño al objetivo
+		Global.current_target.take_damage(actual_damage)
+		
+		# Esperar a que la animación de recibir daño termine
+		await Global.await_current_target_animation()
 	
 
 # Configuración de la UI
@@ -267,7 +268,8 @@ func _player_turn():
 	if player_characters[current_turn_index]["state"] == Global.CharaState.DEATH:
 		_end_turn()
 		return
-		
+	
+	await Global.wait_for_all_tweens()
 	await await_battle_animation()
 	await Global.await_current_target_animation()
 	
@@ -337,6 +339,10 @@ func _on_hability1_button_pressed():
 	
 	if Global.current_attacker.hability1_core_type == Global.TypeOfHability.ATTACK:
 		_show_target_selection(enemy_characters)
+		
+	if Global.current_attacker.hability1_core_type == Global.TypeOfHability.DAMAGEPERTURN:
+		_show_target_selection(enemy_characters)
+		
 	
 func _on_hability2_mouse_entered():
 		ui_message_label.text = Global.current_attacker.hability2_description
@@ -348,6 +354,9 @@ func _on_hability2_button_pressed():
 	
 	if Global.current_attacker.hability2_core_type == Global.TypeOfHability.ATTACK:
 		_show_target_selection(enemy_characters)
+		
+	if Global.current_attacker.hability2_core_type == Global.TypeOfHability.DAMAGEPERTURN:
+		_show_target_selection(enemy_characters)
 	
 func _on_hability3_mouse_entered():
 	ui_message_label.text = Global.current_attacker.hability3_description
@@ -358,6 +367,9 @@ func _on_hability3_button_pressed():
 		_show_ui_target_selection(ui_player_data.get_children())
 	
 	if Global.current_attacker.hability3_core_type == Global.TypeOfHability.ATTACK:
+		_show_target_selection(enemy_characters)
+		
+	if Global.current_attacker.hability3_core_type == Global.TypeOfHability.DAMAGEPERTURN:
 		_show_target_selection(enemy_characters)
 	
 # Mostrar selección de objetivo
@@ -466,6 +478,7 @@ func _end_turn():
 			current_turn_index = 0
 			#await await_battle_animation()
 			#await Global.await_current_target_animation()
+			await Global.wait_for_all_tweens()
 			_enemy_turn()
 			return
 	ui_skill_container.visible = false
@@ -478,8 +491,12 @@ func _enemy_end_turn():
 		
 		for player in player_characters:
 			player.is_defending = false
+		
+		await Global.wait_for_all_tweens()
+		
+		await _update_effects()
+		await Global.wait_for_all_tweens()
 		_player_turn()
-		_update_effects()
 		battle_turn += 1
 		return
 	else:
@@ -498,6 +515,10 @@ func _enemy_turn():
 		
 	await await_battle_animation()
 	await Global.await_current_target_animation()
+	
+	for child in ui_player_data.get_children():
+			child.enemies_attacking = true
+			
 	
 	Global.current_attacker = enemy_characters[enemy_current_turn_index]
 	
@@ -549,8 +570,11 @@ func _is_battle_over() -> bool:
 	return false
 
 func _update_effects():
-	for character in player_characters + enemy_characters:
-		character.update_effects()
+	for child in ui_player_data.get_children():
+			child.enemies_attacking = false
+	
+	for character in enemy_characters + player_characters:
+		await character.update_effects()
 # Finaliza la batalla
 func _end_battle(result: String):
 	var end_game_scene = load("res://scenes/gameover.tscn")

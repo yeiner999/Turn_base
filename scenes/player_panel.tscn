@@ -76,4 +76,4 @@ custom_minimum_size = Vector2(120, 20)
 layout_mode = 2
 
 [node name="Marker2D" type="Marker2D" parent="."]
-position = Vector2(54, -106)
+position = Vector2(80, -50)

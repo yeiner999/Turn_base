@@ -8,12 +8,14 @@ enum TypeOfDamage {
 	MAGICAL,
 	ILLUSORY,
 	PIERCING,
+	PERTURN,
 	NONE
 }
 
 enum TypeOfHability {
 	ATTACK,
-	SUPPORT
+	SUPPORT,
+	DAMAGEPERTURN
 }
 
 enum CharaState {
@@ -53,7 +55,7 @@ func calculate_multiplier(typeOfAttack: TypeOfDamage) -> void:
 	
 func display_damage(damage, position):
 	var label = Label.new()
-	label.global_position = position
+	#label.global_position = position
 	label.text = damage
 	label.z_index = 11
 	label.label_settings = LabelSettings.new()
@@ -71,6 +73,8 @@ func display_damage(damage, position):
 	
 	await label.resized
 	label.pivot_offset = (label.size/2)
+	position -= Vector2(label.size.x/2, label.size.y/2)
+	label.global_position = position
 	
 	var tween = get_tree().create_tween()
 	tween.set_parallel(true)
@@ -89,3 +93,9 @@ func display_damage(damage, position):
 	
 	await tween.finished
 	label.queue_free()
+	
+func wait_for_all_tweens():
+	for tween in get_tree().get_processed_tweens():
+		if tween.is_running():
+			await tween.finished
+		

@@ -9,6 +9,7 @@ signal ui_target_selected(character)
 var selecting_target = false
 var alive = true
 var reference_character
+var enemies_attacking = false
 
 func _ready():
 	# Habilita la detección de eventos de mouse
@@ -20,7 +21,7 @@ func _ready():
 	health_bar.value = reference_character.health
 	
 func _process(_delta):
-	if Global.current_target == reference_character and not Global.current_attacker.is_player:
+	if Global.current_target == reference_character and not Global.current_attacker.is_player and enemies_attacking:
 		target_indicator.visible = true
 	else:
 		target_indicator.visible = false
